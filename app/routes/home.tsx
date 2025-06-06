@@ -3,6 +3,7 @@ import ActionButton from "~/components/ActionButton";
 import type { Route } from "./+types/home";
 import ChatComponent from "~/components/pages/ChatComponents";
 import { ChatIcon, TodoIcon } from "~/components/Icons";
+import TodoComponents from "~/components/pages/TodoComponents";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -16,15 +17,12 @@ export default function Home() {
   const [isOpenPage, setIsOpenPage] = useState<number | null>(null);
   const [isChatPage, setIsChatPage] = useState(false);
   const [isTodoPage, setIsTodoPage] = useState(false);
-  const [isActiveBtn, setIsActiveBtn] = useState(false);
-
-  console.log(isOpenPage);
 
   return (
     <main className="relative h-screen overflow-hidden">
       <div className="fixed bottom-8 right-8 w-fit h-[68px]">
         {isChatPage && <ChatComponent />}
-        {isTodoPage && <></>}
+        {isTodoPage && <TodoComponents />}
         <div
           className={`flex items-center ${
             isOpenPage !== null ? "gap-4" : "gap-[26px]"
@@ -47,6 +45,7 @@ export default function Home() {
                     setIsOpenPage(0);
                   } else {
                     setIsChatPage(true);
+                    setIsTodoPage(false);
                     setIsOpenPage(1);
                   }
                 } else {
