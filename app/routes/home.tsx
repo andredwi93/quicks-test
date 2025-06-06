@@ -4,6 +4,7 @@ import type { Route } from "./+types/home";
 import ChatComponent from "~/components/pages/ChatComponents";
 import { ChatIcon, TodoIcon } from "~/components/Icons";
 import TodoComponents from "~/components/pages/TodoComponents";
+import { Toaster } from "~/components/ui/sonner";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -90,6 +91,7 @@ export default function Home() {
           )}
         </div>
       </div>
+      <Toaster position="top-center" />
     </main>
   );
 }

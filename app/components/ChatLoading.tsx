@@ -1,4 +1,4 @@
-export default function ChatLoading() {
+export default function ChatLoading({ title }: { title: string }) {
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-3 w-full h-full items-center justify-center">
       <svg
@@ -36,7 +36,7 @@ export default function ChatLoading() {
           fill="white"
         />
       </svg>
-      <p className="text-base text-primary-400">Loading Chats ...</p>
+      <p className="text-base text-primary-400">{title} ...</p>
     </div>
   );
 }

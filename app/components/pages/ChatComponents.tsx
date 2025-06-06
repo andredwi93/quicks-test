@@ -91,7 +91,7 @@ export default function ChatComponent({ messageType }: ChatComponentProps) {
         />
         <Search size={16} />
       </div>
-      {isLoading && <ChatLoading />}
+      {isLoading && <ChatLoading title="Loading Chats" />}
       {filteredMessages.length > 0 ? (
         filteredMessages.map((msg, index) => (
           <div key={index} className="flex gap-4 border-b py-4 last:border-0">
