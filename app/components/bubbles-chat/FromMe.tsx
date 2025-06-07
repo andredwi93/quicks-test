@@ -1,4 +1,5 @@
 import { Ellipsis } from "lucide-react";
+import { useState } from "react";
 import {
   Popover,
   PopoverTrigger,
@@ -18,6 +19,12 @@ export default function ChatFromMe({
   onClickEdit,
   onClickDelete,
 }: ChatFromMeProps) {
+  const [open, setOpen] = useState(false);
+
+  const handleClickInside = () => {
+    setOpen(false); // closes the Popover
+  };
+
   return (
     <div className="flex justify-end mb-3">
       <div className="w-full flex flex-col gap-1 max-w-[430px]">
@@ -26,20 +33,26 @@ export default function ChatFromMe({
         </h5>
         <div className="w-full flex justify-end">
           <div className="flex gap-2 w-fit">
-            <Popover>
+            <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Ellipsis size={14} />
               </PopoverTrigger>
               <PopoverContent className="w-[126px] p-0">
                 <div
-                  onClick={onClickEdit}
+                  onClick={() => {
+                    setOpen(false);
+                    onClickEdit?.();
+                  }}
                   className="text-base text-primary-100 cursor-pointer p-2"
                 >
                   Edit
                 </div>
                 <hr />
                 <div
-                  onClick={onClickDelete}
+                  onClick={() => {
+                    setOpen(false);
+                    onClickDelete?.();
+                  }}
                   className="text-base text-red cursor-pointer p-2"
                 >
                   Delete

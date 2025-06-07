@@ -11,8 +11,9 @@ type ChatFromOtherProps = {
   time: string;
   textColor: string;
   bgColor: string;
-  onClickEdit?: () => void;
-  onClickDelete?: () => void;
+  isOption?: boolean;
+  onShare?: () => void;
+  onReply?: () => void;
 };
 
 export default function ChatFromOther({
@@ -21,8 +22,9 @@ export default function ChatFromOther({
   time,
   textColor,
   bgColor,
-  onClickEdit,
-  onClickDelete,
+  isOption = true,
+  onShare,
+  onReply,
 }: ChatFromOtherProps) {
   return (
     <div className="flex mb-3">
@@ -30,31 +32,35 @@ export default function ChatFromOther({
         <h5 className={`text-sm ${textColor} font-semibold`}>{name}</h5>
         <div className="flex gap-2">
           <div
-            className={`rounded-[10px] flex flex-col gap-2 p-[10px] ${bgColor}`}
+            className={`w-fit rounded-[10px] flex flex-col gap-2 p-[10px] ${bgColor}`}
           >
             <p className="text-sm font-medium text-primary-400">{text}</p>
             <p className="text-sm font-medium text-primary-400">{time}</p>
           </div>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Ellipsis size={14} />
-            </PopoverTrigger>
-            <PopoverContent className="w-[126px] p-0">
-              <div
-                onClick={onClickEdit}
-                className="text-base text-primary-100 cursor-pointer p-2"
-              >
-                Edit
-              </div>
-              <hr />
-              <div
-                onClick={onClickDelete}
-                className="text-base text-red cursor-pointer p-2"
-              >
-                Delete
-              </div>
-            </PopoverContent>
-          </Popover>
+          {isOption && (
+            <div className="w-fit">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Ellipsis size={14} />
+                </PopoverTrigger>
+                <PopoverContent className="w-[126px] p-0">
+                  <div
+                    onClick={onShare}
+                    className="text-base text-primary-100 cursor-pointer p-2"
+                  >
+                    Edit
+                  </div>
+                  <hr />
+                  <div
+                    onClick={onReply}
+                    className="text-base text-red cursor-pointer p-2"
+                  >
+                    Delete
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
         </div>
       </div>
     </div>
