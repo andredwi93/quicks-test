@@ -13,15 +13,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import ChatLoading from "../ChatLoading";
-import TodoItem from "../TodoItem";
-
-type Todo = {
-  id: string;
-  title: string;
-  dueDate: string;
-  description: string;
-  completed: boolean;
-};
+import TodoItem, { type Todo } from "../TodoItem";
 
 export default function TodoComponents() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -32,9 +24,10 @@ export default function TodoComponents() {
 
   const loadTodos = (category: string | null): Todo[] => {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") as Record<string, Todo[]>;
-    if (!category) {
+    if (!category || category === "all") {
       return Object.values(stored).flat();
     }
+    
     return stored[category] || [];
   };
 
@@ -51,7 +44,7 @@ export default function TodoComponents() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
   };
 
-  const addTask = () => {
+  const addTodo = () => {
     if (!selectedCategory) {
       toast("Please select a category task first.");
       return;
@@ -66,6 +59,7 @@ export default function TodoComponents() {
         dueDate: "",
         description: "",
         completed: false,
+        bookmarks: []
       };
 
       const updatedTodos = [...todos, newTodo];
@@ -118,20 +112,21 @@ export default function TodoComponents() {
   }, [selectedCategory]);
 
   return (
-    <div className="absolute bottom-24 right-8 w-[734px] h-[500px] bg-white py-5 px-8 rounded-xl overflow-x-hidden overflow-y-scroll">
-      <div className="flex justify-between pl-20 mb-4">
+    <div className="absolute bottom-24 right-0 md:right-8 w-[320px] md:w-[734px] h-[500px] bg-white py-5 px-8 rounded-xl overflow-x-hidden overflow-y-scroll">
+      <div className="flex gap-4 justify-between pl-20 mb-4">
         <Select onValueChange={(value) => setSelectedCategory(value)}>
           <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="My Tasks" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
+              <SelectItem value="all">All Tasks</SelectItem>
               <SelectItem value="personal">Personal Errands</SelectItem>
               <SelectItem value="urgent">Urgent To-Do</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
-        <Button onClick={addTask}>New Task</Button>
+        <Button onClick={addTodo}>New Task</Button>
       </div>
       {loading ? (
         <ChatLoading title="Loading Task List" />
@@ -140,7 +135,6 @@ export default function TodoComponents() {
           type="single"
           collapsible
           className="w-full"
-          defaultValue="item-1"
         >
           {todos.length > 0 ? (
             todos.map((todo) => (

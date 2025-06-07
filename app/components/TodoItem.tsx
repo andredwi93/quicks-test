@@ -15,13 +15,22 @@ import {
 import { Button } from "~/components/ui/button";
 import { DayPicker, getDefaultClassNames } from "react-day-picker";
 import useDebouncedEffect from "~/helpers/delayInput";
+import { toast } from "sonner";
+import { dataBookmarks } from "~/lib/data-bookmarks";
 
-type Todo = {
+type TodoBookmark = {
+  id: number;
+  title: string;
+  bgColor: string;
+};
+
+export type Todo = {
   id: string;
   title: string;
   dueDate: string;
   description: string;
   completed: boolean;
+  bookmarks: TodoBookmark[];
 };
 
 type TodoItemProps = {
@@ -30,13 +39,18 @@ type TodoItemProps = {
   deleteTodo: (id: string) => void;
 };
 
-export default function TodoItem({ todo, updateTodo, deleteTodo }: TodoItemProps) {
+export default function TodoItem({
+  todo,
+  updateTodo,
+  deleteTodo,
+}: TodoItemProps) {
   const [title, setTitle] = useState(todo.title);
   const [desc, setDesc] = useState(todo.description);
   const [isEditable, setIsEditable] = useState(false);
   const [isEditableDesc, setIsEditableDesc] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const defaultClassNames = getDefaultClassNames();
+  const [openBookmarks, setOpenBookmarks] = useState(false);
 
   const dueDate = todo.dueDate ? new Date(todo.dueDate) : null;
   const daysLeft = dueDate
@@ -62,7 +76,7 @@ export default function TodoItem({ todo, updateTodo, deleteTodo }: TodoItemProps
 
   return (
     <AccordionItem value={todo.id} className="relative">
-      <div className="absolute w-1/2 top-4 left-0 flex items-center gap-3">
+      <div className="relative md:absolute w-1/2 top-4 left-0 flex items-center gap-3">
         <Checkbox
           checked={todo.completed}
           onCheckedChange={(checked) =>
@@ -85,7 +99,7 @@ export default function TodoItem({ todo, updateTodo, deleteTodo }: TodoItemProps
         />
       </div>
       <AccordionTrigger className="flex justify-between">
-        <div className="flex-1" />
+        <div className="flex-1 hidden md:flex" />
         <div className="flex gap-4 items-center">
           {isFuture
             ? daysLeft !== null && (
@@ -117,8 +131,8 @@ export default function TodoItem({ todo, updateTodo, deleteTodo }: TodoItemProps
         </Popover>
       </div>
 
-      <AccordionContent className="pl-8 flex flex-col gap-4 mt-3">
-        <div className="flex items-center gap-4">
+      <AccordionContent className="flex flex-col gap-4 mt-3">
+        <div className="flex pl-7 items-center gap-4">
           <Clock4 size={16} color="#2f80ed" />
           <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
@@ -154,7 +168,7 @@ export default function TodoItem({ todo, updateTodo, deleteTodo }: TodoItemProps
           </Popover>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex pl-7 gap-4">
           <Pencil size={16} color={todo.description ? "#2f80ed" : "#828282"} />
           <textarea
             value={desc}
@@ -167,6 +181,72 @@ export default function TodoItem({ todo, updateTodo, deleteTodo }: TodoItemProps
             } px-3 py-1 rounded-md text-sm w-full`}
             onChange={(e) => setDesc(e.target.value)}
           ></textarea>
+        </div>
+
+        <div className="pl-4">
+          <div className="flex gap-4 bg-[#f9f9f9] px-[10px] py-2 rounded-md w-full">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M15.4033 0.833374H7.5234C6.65748 0.833374 5.95687 1.58337 5.95687 2.50004H13.8289C14.6948 2.50004 15.4033 3.25004 15.4033 4.16671V15L16.9777 15.8334V2.50004C16.9777 1.58337 16.2692 0.833374 15.4033 0.833374ZM12.2546 5.83337V16.6417L8.94044 15.1334L8.31855 14.85L7.69667 15.1334L4.38255 16.6417V5.83337H12.2546ZM4.38251 4.16671H12.2545C13.1204 4.16671 13.8289 4.91671 13.8289 5.83337V19.1667L8.31851 16.6667L2.80811 19.1667V5.83337C2.80811 4.91671 3.51659 4.16671 4.38251 4.16671Z"
+                fill={todo?.bookmarks?.length ? "#2f80ed" : "#828282"}
+              />
+            </svg>
+            <Popover open={openBookmarks} onOpenChange={setOpenBookmarks}>
+              <PopoverTrigger asChild>
+                <div className="w-full overflow-x-auto">
+                  {todo?.bookmarks?.map((item) => (
+                    <div
+                      key={item.id}
+                      className={`${item.bgColor} inline-block mr-2 mb-2 py-2 px-3 rounded-sm text-sm text-primary-400 cursor-pointer`}
+                      onClick={() => {
+                        updateTodo({
+                          ...todo,
+                          bookmarks: todo?.bookmarks?.filter(
+                            (b) => b.id !== item.id
+                          ),
+                        });
+                      }}
+                    >
+                      {item.title}
+                    </div>
+                  ))}
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className="border rounded-sm px-4 py-3 flex flex-col gap-2">
+                {dataBookmarks.map((item: TodoBookmark) => (
+                  <div
+                    key={item.id}
+                    className={`${item.bgColor} ${
+                      todo?.bookmarks?.find((b) => b.id === item.id)
+                        ? "border border-primary-100"
+                        : ""
+                    } py-2 px-3 rounded-sm text-sm text-primary-400 cursor-pointer`}
+                    onClick={() => {
+                      if (todo?.bookmarks?.find((b) => b.id === item.id)) {
+                        toast("Bookmark already added");
+                        return;
+                      } else {
+                        updateTodo({
+                          ...todo,
+                          bookmarks: [...todo?.bookmarks, item],
+                        });
+                      }
+                    }}
+                  >
+                    {item.title}
+                  </div>
+                ))}
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
       </AccordionContent>
     </AccordionItem>
