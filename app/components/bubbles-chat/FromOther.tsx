@@ -1,4 +1,9 @@
 import { Ellipsis } from "lucide-react";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "~/components/ui/popover";
 
 type ChatFromOtherProps = {
   name: string;
@@ -6,6 +11,8 @@ type ChatFromOtherProps = {
   time: string;
   textColor: string;
   bgColor: string;
+  onClickEdit?: () => void;
+  onClickDelete?: () => void;
 };
 
 export default function ChatFromOther({
@@ -14,6 +21,8 @@ export default function ChatFromOther({
   time,
   textColor,
   bgColor,
+  onClickEdit,
+  onClickDelete,
 }: ChatFromOtherProps) {
   return (
     <div className="flex mb-3">
@@ -26,7 +35,26 @@ export default function ChatFromOther({
             <p className="text-sm font-medium text-primary-400">{text}</p>
             <p className="text-sm font-medium text-primary-400">{time}</p>
           </div>
-          <Ellipsis size={14} />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Ellipsis size={14} />
+            </PopoverTrigger>
+            <PopoverContent className="w-[126px] p-0">
+              <div
+                onClick={onClickEdit}
+                className="text-base text-primary-100 cursor-pointer p-2"
+              >
+                Edit
+              </div>
+              <hr />
+              <div
+                onClick={onClickDelete}
+                className="text-base text-red cursor-pointer p-2"
+              >
+                Delete
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </div>
