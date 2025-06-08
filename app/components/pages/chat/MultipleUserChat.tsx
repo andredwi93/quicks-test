@@ -5,77 +5,18 @@ import ChatFromMe from "~/components/bubbles-chat/FromMe";
 import ChatFromOther from "~/components/bubbles-chat/FromOther";
 import Separator from "~/components/bubbles-chat/Separator";
 import { Button } from "~/components/ui/button";
-<<<<<<< HEAD
 import { dataMultipleChats } from "~/lib/data-multichat";
-=======
->>>>>>> 043817a72a00066dfbf578aaca035ccd438cecbc
 
 export default function MultipleUserChat({ onClose }: { onClose: () => void }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [chatMessage, setChatMessage] = useState("");
   const [errEmptyMessage, setErrEmptyMessage] = useState("");
-<<<<<<< HEAD
   const [replyMessage, setReplyMessage] = useState("");
-=======
->>>>>>> 043817a72a00066dfbf578aaca035ccd438cecbc
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
   const [isEditMessage, setIsEditMessage] = useState(false);
   const [idMessage, setIdMessage] = useState<number | null>();
-<<<<<<< HEAD
   const [dataMessage, setDataMessage] = useState(dataMultipleChats);
-=======
-  const [dataMessage, setDataMessage] = useState([
-    {
-      id: 1,
-      sender: "You",
-      text: "No worries. It will be completed ASAP. I’ve asked him yesterday.",
-      time: "19:32",
-      textColor: "",
-      bgColor: "",
-    },
-    {
-      id: 2,
-      sender: "Date",
-      text: "Today June 09, 2021",
-      time: "",
-      textColor: "",
-      bgColor: "",
-    },
-    {
-      id: 3,
-      sender: "Mary Hilda",
-      text: "Hello Obaidullah, I will be your case advisor for case #029290. I have assigned some homework for you to fill. Please keep up with the due dates. Should you have any questions, you can message me anytime. Thanks.",
-      time: "19:32",
-      textColor: "text-orange-400",
-      bgColor: "bg-orange-300",
-    },
-    {
-      id: 4,
-      sender: "You",
-      text: "Please contact Mary for questions regarding the case bcs she will be managing your forms from now on! Thanks Mary.",
-      time: "19:32",
-      textColor: "",
-      bgColor: "",
-    },
-    {
-      id: 5,
-      sender: "New",
-      text: "New Message",
-      time: "",
-      textColor: "",
-      bgColor: "",
-    },
-    {
-      id: 6,
-      sender: "Obaidullah Amarkhil",
-      text: "Morning. I’ll try to do them. Thanks",
-      time: "19:32",
-      textColor: "text-teal-400",
-      bgColor: "bg-teal-100",
-    },
-  ]);
->>>>>>> 043817a72a00066dfbf578aaca035ccd438cecbc
 
   useEffect(() => {
     const handleScroll = () => {
@@ -124,20 +65,14 @@ export default function MultipleUserChat({ onClose }: { onClose: () => void }) {
       time: format(new Date(), "HH:mm"),
       textColor: "",
       bgColor: "",
-<<<<<<< HEAD
       isReply: replyMessage ? true : false,
       replyMessage: replyMessage,
-=======
->>>>>>> 043817a72a00066dfbf578aaca035ccd438cecbc
     };
 
     const updatedMessages = [...dataMessage, message];
     setDataMessage(updatedMessages);
     setChatMessage("");
-<<<<<<< HEAD
     setReplyMessage("");
-=======
->>>>>>> 043817a72a00066dfbf578aaca035ccd438cecbc
 
     setTimeout(() => {
       if (scrollRef.current) {
@@ -183,21 +118,14 @@ export default function MultipleUserChat({ onClose }: { onClose: () => void }) {
         </div>
       </div>
       <div className="py-3 px-6">
-<<<<<<< HEAD
         {dataMessage.map((item) => {
-=======
-        {dataMessage.map((item, index) => {
->>>>>>> 043817a72a00066dfbf578aaca035ccd438cecbc
           return item.sender === "You" ? (
             <ChatFromMe
               key={item.id}
               text={item.text}
               time={item.time}
-<<<<<<< HEAD
               textReply={item.replyMessage}
               isReply={item.isReply}
-=======
->>>>>>> 043817a72a00066dfbf578aaca035ccd438cecbc
               onClickEdit={() => {
                 setChatMessage(item.text);
                 setIsEditMessage(true);
@@ -217,10 +145,7 @@ export default function MultipleUserChat({ onClose }: { onClose: () => void }) {
               time={item.time}
               textColor={item.textColor}
               bgColor={item.bgColor}
-<<<<<<< HEAD
               onReply={() => setReplyMessage(item.text)}
-=======
->>>>>>> 043817a72a00066dfbf578aaca035ccd438cecbc
             />
           );
         })}
@@ -240,7 +165,6 @@ export default function MultipleUserChat({ onClose }: { onClose: () => void }) {
       )}
 
       <div className="flex gap-3 px-6 pb-5 sticky bottom-0 left-0 bg-white">
-<<<<<<< HEAD
         <div className="flex-1 flex-col">
           {replyMessage && (
             <div className="bg-[#F8F8F8] relative rounded-tl-sm rounded-tr-sm border border-primary-300 flex-1 flex flex-col gap-2 p-[10px]">
@@ -255,9 +179,6 @@ export default function MultipleUserChat({ onClose }: { onClose: () => void }) {
               </div>
             </div>
           )}
-=======
-        <div className="flex-1">
->>>>>>> 043817a72a00066dfbf578aaca035ccd438cecbc
           <input
             type="text"
             name="chattext"
@@ -276,13 +197,9 @@ export default function MultipleUserChat({ onClose }: { onClose: () => void }) {
                 }
               }
             }}
-<<<<<<< HEAD
             className={`w-full px-4 py-2 border border-primary-300 text-sm text-primary-500 ${
               replyMessage ? "rounded-bl-sm rounded-br-sm" : "rounded-sm"
             }`}
-=======
-            className="w-full px-4 py-2 border border-primary-300 text-sm text-primary-500 rounded-sm"
->>>>>>> 043817a72a00066dfbf578aaca035ccd438cecbc
             placeholder="Type a new message"
           />
           {errEmptyMessage && (

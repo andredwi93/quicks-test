@@ -24,7 +24,7 @@ export default function TodoComponents() {
 
   const loadTodos = (category: string | null): Todo[] => {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") as Record<string, Todo[]>;
-    if (!category || category === "all") {
+    if (!category) {
       return Object.values(stored).flat();
     }
     
@@ -120,7 +120,6 @@ export default function TodoComponents() {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="all">All Tasks</SelectItem>
               <SelectItem value="personal">Personal Errands</SelectItem>
               <SelectItem value="urgent">Urgent To-Do</SelectItem>
             </SelectGroup>

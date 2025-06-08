@@ -24,10 +24,6 @@ type ChatFromOtherProps = {
   textColor: string;
   bgColor: string;
   isOption?: boolean;
-<<<<<<< HEAD
-=======
-  onShare?: () => void;
->>>>>>> 043817a72a00066dfbf578aaca035ccd438cecbc
   onReply?: () => void;
 };
 
@@ -38,10 +34,6 @@ export default function ChatFromOther({
   textColor,
   bgColor,
   isOption = true,
-<<<<<<< HEAD
-=======
-  onShare,
->>>>>>> 043817a72a00066dfbf578aaca035ccd438cecbc
   onReply,
 }: ChatFromOtherProps) {
   const [open, setOpen] = useState(false);
@@ -78,18 +70,12 @@ export default function ChatFromOther({
           </div>
           {isOption && (
             <div className="w-fit">
-<<<<<<< HEAD
               <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild className="cursor-pointer">
-=======
-              <Popover>
-                <PopoverTrigger asChild>
->>>>>>> 043817a72a00066dfbf578aaca035ccd438cecbc
                   <Ellipsis size={14} />
                 </PopoverTrigger>
                 <PopoverContent className="w-[126px] p-0">
                   <div
-<<<<<<< HEAD
                     onClick={() => {
                       setOpen(false);
                       setOpenDialog(true);
@@ -108,19 +94,6 @@ export default function ChatFromOther({
                     className="text-base text-primary-100 cursor-pointer p-2"
                   >
                     Reply
-=======
-                    onClick={onShare}
-                    className="text-base text-primary-100 cursor-pointer p-2"
-                  >
-                    Edit
-                  </div>
-                  <hr />
-                  <div
-                    onClick={onReply}
-                    className="text-base text-red cursor-pointer p-2"
-                  >
-                    Delete
->>>>>>> 043817a72a00066dfbf578aaca035ccd438cecbc
                   </div>
                 </PopoverContent>
               </Popover>
