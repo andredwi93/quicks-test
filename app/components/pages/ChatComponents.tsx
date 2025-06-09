@@ -1,19 +1,26 @@
+import { format, parseISO } from "date-fns";
 import { Search, User } from "lucide-react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { truncate } from "~/helpers/textConfig";
 import ChatLoading from "../ChatLoading";
 import MultipleUserChat from "./chat/MultipleUserChat";
-import { v4 as uuid } from "uuid";
 import SupportChat from "./chat/SupportChat";
+
+type ActiveChat = {
+  id: number;
+  name: string;
+  message: string;
+};
 
 type ChatComponentProps = {
   messageType?: {
     id: number;
-    sender: string;
-    message: string;
-    date: string;
-    title: string;
-    body: string;
+    isGroup: boolean;
+    isSupport: boolean;
+    isRead: boolean;
+    groupTitle: string;
+    activeChat: ActiveChat;
+    createdAt: string;
   };
 };
 
@@ -29,47 +36,14 @@ export default function ChatComponent({ messageType }: ChatComponentProps) {
   const getUserMessages = async () => {
     setIsLoading(true);
     try {
-      const usersRes = await fetch(
-        "https://jsonplaceholder.typicode.com/users"
-      );
-      const postsRes = await fetch(
-        "https://jsonplaceholder.typicode.com/posts"
+      const getUsers = await fetch(
+        "https://mocki.io/v1/c883700a-0c5f-46ee-853a-0169f30df9f0"
       );
 
-      const users = await usersRes.json();
-      const posts = await postsRes.json();
+      const users = await getUsers.json();
 
-      const combined = posts.slice(0, 3).map((post: any, index: number) => {
-        const user = users.find((u: any) => u.id === post.userId);
-        return {
-          id: post.id,
-          title: post.title,
-          body: post.body,
-          sender: user?.name || "Unknown Sender",
-          date: new Date(Date.now() - index * 3600000).toLocaleString(),
-        };
-      });
-
-      setAllMessages([
-        ...combined,
-        {
-          id: uuid(),
-          title: "FastVisa Support",
-          body: "Hey there! Welcome to your inbox.",
-          sender: "FastVisa Support",
-          date: new Date(Date.now() - 3 * 3600000).toLocaleString(),
-        },
-      ]);
-      setFilteredMessages([
-        ...combined,
-        {
-          id: uuid(),
-          title: "FastVisa Support",
-          body: "Hey there! Welcome to your inbox.",
-          sender: "FastVisa Support",
-          date: new Date(Date.now() - 3 * 3600000).toLocaleString(),
-        },
-      ]);
+      setAllMessages(users?.data);
+      setFilteredMessages(users?.data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -90,9 +64,13 @@ export default function ChatComponent({ messageType }: ChatComponentProps) {
         return;
       }
 
-      const filtered = allMessages.filter((msg) =>
-        msg?.title.toLowerCase().includes(keyword)
-      );
+      const filtered = allMessages.filter((msg) => {
+        if (msg?.groupTitle.length) {
+          return msg?.groupTitle.toLowerCase().includes(keyword);
+        } else {
+          return msg?.activeChat.name.toLowerCase().includes(keyword);
+        }
+      });
       setFilteredMessages(filtered);
     },
     [allMessages]
@@ -122,14 +100,14 @@ export default function ChatComponent({ messageType }: ChatComponentProps) {
               key={index}
               className="flex flex-col md:flex-row gap-4 border-b py-4 last:border-0 cursor-pointer"
               onClick={() => {
-                if (!msg?.sender.includes("FastVisa")) {
+                if (msg?.isGroup) {
                   setOpenMultiMessage(true);
                 } else {
                   setOnSupportMessage(true);
                 }
               }}
             >
-              {!msg?.sender.includes("FastVisa") ? (
+              {msg?.isGroup ? (
                 <div className="w-[51px] h-[34px] relative flex items-end justify-end">
                   <div className="w-[34px] h-[34px] z-10 rounded-full bg-primary-100 flex items-center justify-center">
                     <User color="white" size={16} />
@@ -141,27 +119,34 @@ export default function ChatComponent({ messageType }: ChatComponentProps) {
               ) : (
                 <div className="w-[51px] h-[34px] relative flex items-center justify-center">
                   <div className="w-[34px] h-[34px] rounded-full bg-primary-100 text-white flex items-center justify-center">
-                    {msg?.sender[0]}
+                    {msg?.activeChat.name[0]}
                   </div>
                 </div>
               )}
               <div className="flex-1">
                 <div className="flex flex-col md:flex-row text-sm gap-4">
                   <p className="text-primary-100 font-semibold capitalize">
-                    {msg?.title}
+                    {msg?.groupTitle.length
+                      ? msg?.groupTitle
+                      : msg?.activeChat.name}
                   </p>
                   <span className="text-primary-400 font-semibold">
-                    {msg?.date}
+                    {msg?.isRead
+                      ? format(parseISO(msg?.createdAt), "MMMM d, yyyy HH:mm")
+                      : format(parseISO(msg?.createdAt!), "dd/MM/yyyy HH:mm")}
                   </span>
                 </div>
-                {!msg?.sender.includes("FastVisa") ? (
-                  <p className="font-semibold text-base text-primary-400">
-                    {msg?.sender}:
-                  </p>
-                ) : null}
-                <p className="text-primary-400 text-sm">
-                  {truncate(msg?.body ?? "", 50)}
+                <p className="font-semibold text-base text-primary-400">
+                  {msg?.activeChat.name}:
                 </p>
+                <div className="flex justify-between">
+                  <p className="text-primary-400 text-sm">
+                    {truncate(msg?.activeChat.message ?? "", 50)}
+                  </p>
+                  {!msg?.isRead && (
+                    <div className="w-[10px] h-[10px] rounded-full bg-red"></div>
+                  )}
+                </div>
               </div>
             </div>
           ))
