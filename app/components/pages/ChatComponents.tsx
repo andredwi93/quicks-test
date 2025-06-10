@@ -132,8 +132,8 @@ export default function ChatComponent({ messageType }: ChatComponentProps) {
                   </p>
                   <span className="text-primary-400 font-semibold">
                     {msg?.isRead
-                      ? format(parseISO(msg?.createdAt), "MMMM d, yyyy HH:mm")
-                      : format(parseISO(msg?.createdAt!), "dd/MM/yyyy HH:mm")}
+                      ? format(parseISO(msg?.createdAt), "dd/MM/yyyy HH:mm")
+                      : format(parseISO(msg?.createdAt!), "MMMM d, yyyy HH:mm")}
                   </span>
                 </div>
                 <p className="font-semibold text-base text-primary-400">
